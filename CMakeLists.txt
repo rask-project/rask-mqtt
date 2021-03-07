@@ -1,3 +1,10 @@
+cmake_minimum_required(VERSION 3.14)
+
+project(RaskMqtt VERSION 1.0.0 LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 set(libRaskMqtt_SRCS
     ${CMAKE_CURRENT_LIST_DIR}/src/mqttworker.h
     ${CMAKE_CURRENT_LIST_DIR}/src/raskmqtt_plugin.h
@@ -9,6 +16,8 @@ set(libRaskMqtt_SRCS
 
     ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
 )
+
+set(QT_INSTALL_QMLDIR "$ENV{QTDIR}/qml")
 
 set(plugin_PATH plugins/Rask/Mqtt)
 
@@ -26,25 +35,6 @@ set_target_properties(RaskMqtt
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../../${plugin_PATH}
 )
 
-# Copy qmldir file
-add_custom_command(
-    TARGET RaskMqtt
-    POST_BUILD
-    COMMAND
-        ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
-        ${CMAKE_CURRENT_BINARY_DIR}/${plugin_PATH}/qmldir
-)
-
-add_custom_command(
-    TARGET RaskMqtt
-    POST_BUILD
-    COMMAND
-        ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
-        ${CMAKE_CURRENT_BINARY_DIR}/../../${plugin_PATH}/qmldir
-    )
-
 target_link_libraries(RaskMqtt
     PUBLIC
         Qt${QT_VERSION_MAJOR}::Core
@@ -53,3 +43,6 @@ target_link_libraries(RaskMqtt
         Qt${QT_VERSION_MAJOR}::QuickControls2
         Qt${QT_VERSION_MAJOR}::Mqtt
 )
+
+install(TARGETS RaskMqtt DESTINATION ${QT_INSTALL_QMLDIR}/Rask/Mqtt)
+install(FILES resources/qmldir DESTINATION ${QT_INSTALL_QMLDIR}/Rask/Mqtt)
