@@ -1,13 +1,13 @@
 set(libRaskMqtt_SRCS
-    ${CMAKE_CURRENT_LIST_DIR}/mqttworker.h
-    ${CMAKE_CURRENT_LIST_DIR}/raskmqtt_plugin.h
-    ${CMAKE_CURRENT_LIST_DIR}/mqttsubscription.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/mqttworker.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/raskmqtt_plugin.h
+    ${CMAKE_CURRENT_LIST_DIR}/src/mqttsubscription.h
 
-    ${CMAKE_CURRENT_LIST_DIR}/mqttworker.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/raskmqtt_plugin.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/mqttsubscription.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mqttworker.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/raskmqtt_plugin.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/src/mqttsubscription.cpp
 
-    ${CMAKE_CURRENT_LIST_DIR}/qmldir
+    ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
 )
 
 set(plugin_PATH plugins/Rask/Mqtt)
@@ -32,7 +32,7 @@ add_custom_command(
     POST_BUILD
     COMMAND
         ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_LIST_DIR}/qmldir
+        ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
         ${CMAKE_CURRENT_BINARY_DIR}/${plugin_PATH}/qmldir
 )
 
@@ -41,7 +41,7 @@ add_custom_command(
     POST_BUILD
     COMMAND
         ${CMAKE_COMMAND} -E copy
-        ${CMAKE_CURRENT_LIST_DIR}/qmldir
+        ${CMAKE_CURRENT_LIST_DIR}/resources/qmldir
         ${CMAKE_CURRENT_BINARY_DIR}/../../${plugin_PATH}/qmldir
     )
 
