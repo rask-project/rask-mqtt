@@ -6,39 +6,52 @@ MqttWorker::MqttWorker(QObject *parent) :
 
 QStringList MqttWorker::getPublishers() const
 {
-    return m_publishers.keys();
+    QStringList publishers;
+
+    for (const auto&[key, value] : m_publishers)
+        publishers.append(key);
+
+    return publishers;
 }
 
 QStringList MqttWorker::getSubscribers() const
 {
-    return m_subscribers.keys();
+    QStringList subscribers;
+
+    for (const auto &[key, value] : m_subscribers)
+        subscribers.append(key);
+
+    return subscribers;
 }
 
 void MqttWorker::addSubscriber(const QString &topicName)
 {
-    qDebug() << "Add subscriber" << topicName;
     if (m_subscribers.contains(topicName)) {
-        qCritical() << "Subscriber already exists" << topicName;
+        qInfo() << "Subscriber already exists" << topicName;
         return;
     }
 
-    auto *subscription = new MqttSubscription(QMqttClient::subscribe(topicName));
-    connect(subscription, &MqttSubscription::messageReceived, this, &MqttWorker::subscriptionMessage);
+    auto sub = std::make_unique<MqttSubscription>(QMqttClient::subscribe(topicName));
+    auto [it, result] = m_subscribers.try_emplace(topicName, std::move(sub));
+    if (!result) {
+        qCritical() << "Error trying subscribe topic" << topicName;
+        return;
+    }
 
-    m_subscribers[topicName] = subscription;
+    qDebug() << "Added subscriber" << topicName;
+    connect(it->second.get(), &MqttSubscription::messageReceived, this, &MqttWorker::subscriptionMessage);
     emit subscribersChanged();
 }
 
 void MqttWorker::removeSubscriber(const QString &topicName)
 {
-    qDebug() << "Remove subscriber" << topicName;
     if (!m_subscribers.contains(topicName)) {
         qCritical() << "Subscriber not created" << topicName;
         return;
     }
 
-    delete m_subscribers.find(topicName).value();
-    m_subscribers.remove(topicName);
+    m_subscribers.erase(topicName);
+    qDebug() << "Removed subscriber" << topicName;
     emit subscribersChanged();
 }
 
@@ -56,13 +69,13 @@ void MqttWorker::addPublisher(const QString &topicName)
 
 void MqttWorker::removePublisher(const QString &topicName)
 {
-    qDebug() << "Remove publisher" << topicName;
     if (!m_publishers.contains(topicName)) {
         qCritical() << "Publisher not created" << topicName;
         return;
     }
 
-    m_publishers.remove(topicName);
+    m_publishers.erase(topicName);
+    qDebug() << "Removed publisher" << topicName;
     emit publishersChanged();
 }
 

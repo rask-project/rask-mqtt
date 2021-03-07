@@ -6,7 +6,8 @@
 #include <QtMqtt/QMqttMessage>
 
 #include <QMap>
-#include <vector>
+#include <map>
+#include <memory>
 
 #include "mqttsubscription.h"
 
@@ -36,8 +37,8 @@ signals:
     void newMessage(const QString &topicName, const QString &message);
 
 private:
-    QMap<QString, MqttSubscription *> m_subscribers;
-    QMap<QString, QMqttTopicName> m_publishers;
+    std::map<QString, std::unique_ptr<MqttSubscription>> m_subscribers;
+    std::map<QString, QMqttTopicName> m_publishers;
 
     void subscriptionMessage(const QMqttMessage &mqttMessage);
 };
