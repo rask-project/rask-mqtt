@@ -24,18 +24,18 @@ set(plugin_PATH plugins/Rask/Mqtt)
 set(CMAKE_AUTOMOC ON)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Mqtt REQUIRED)
 
-add_library(RaskMqtt
+add_library(${PROJECT_NAME}
     SHARED
         ${libRaskMqtt_SRCS}
 )
 
-set_target_properties(RaskMqtt
+set_target_properties(${PROJECT_NAME}
     PROPERTIES
         AUTOMOC TRUE
         LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/../../${plugin_PATH}
 )
 
-target_link_libraries(RaskMqtt
+target_link_libraries(${PROJECT_NAME}
     PUBLIC
         Qt${QT_VERSION_MAJOR}::Core
     PRIVATE
@@ -44,5 +44,5 @@ target_link_libraries(RaskMqtt
         Qt${QT_VERSION_MAJOR}::Mqtt
 )
 
-install(TARGETS RaskMqtt DESTINATION ${QT_INSTALL_QMLDIR}/Rask/Mqtt)
+install(TARGETS ${PROJECT_NAME} DESTINATION ${QT_INSTALL_QMLDIR}/Rask/Mqtt)
 install(FILES resources/qmldir DESTINATION ${QT_INSTALL_QMLDIR}/Rask/Mqtt)
